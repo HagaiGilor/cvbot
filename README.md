@@ -7,3 +7,6 @@ Afterwards run driver.py, it contains the method that goes into Linkedin.
 
 This should log into your linkedin, go to jobs and start easy applying to all of them.
 
+
+
+This code is free to use! If you want to improve it or have any suggestions let me know !
