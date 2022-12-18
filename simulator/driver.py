@@ -11,7 +11,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
-from simulator.constants import LINKEDIN_JOBS_SEARCH_URL, LINKEDIN_SIGN_IN_URL
+from simulator.constants import LINKEDIN_JOBS_SEARCH_URL, LINKEDIN_SIGN_IN_URL, EMAIL, PASSWORD
 
 
 class Driver(WebDriver):
@@ -158,7 +158,7 @@ def test_func():
 
 
 def linkedin(driver: Driver):
-    driver.sign_in_linked_in(username='hagixxg26@gmail.com', password='hagixxg28')
+    driver.sign_in_linked_in(username=EMAIL, password=PASSWORD)
     driver.init_jobs_linkedin()
     driver.apply_to_linkedin_jobs()
     time.sleep(100)
