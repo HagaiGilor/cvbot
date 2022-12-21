@@ -11,7 +11,8 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
-from simulator.constants import LINKEDIN_JOBS_SEARCH_URL, LINKEDIN_SIGN_IN_URL, EMAIL, PASSWORD
+from simulator.constants import LINKEDIN_JOBS_SEARCH_URL, LINKEDIN_SIGN_IN_URL, EMAIL, PASSWORD, \
+    RESUME_TEXT
 
 
 class Driver(WebDriver):
@@ -46,12 +47,17 @@ class Driver(WebDriver):
         self.click_by_id(value=card_id)
 
     @staticmethod
-    def generate_xpath(tag: str, text: Optional[str] = None, class_: Optional[str] = None):
+    def generate_xpath(tag: str, text: Optional[str] = None,
+                       class_: Optional[str] = None,
+                       aria_label: Optional[str] = None):
         if text:
             return f"//{tag}[text()='{text}']"
 
         if class_:
             return f"//{tag}[contains(@class, '{class_}')]"
+
+        if aria_label:
+            return f"//{tag}[contains(@aria-label, '{aria_label}')]"
 
         raise ValueError("Missing value")
 
@@ -100,6 +106,17 @@ class Driver(WebDriver):
                 continue
             return
 
+    def check_for_resume_selection(self):
+        xpath = self.generate_xpath(tag='button', aria_label=RESUME_TEXT)
+        resume_button = self.find_element_by_xpath(value=xpath)
+
+        if not resume_button:
+            return
+
+        # Need to add wait for resume_button to be clickable, should be moved to it's own function
+        self.wait_for_element_to_be_clickable(locator=(By.XPATH, xpath))
+        resume_button.click()
+
     def fill_all_input_with_value(self, value: int = 1):
         inputs = self.find_elements(by=By.XPATH, value='//input')
         for input_ in inputs:
@@ -116,7 +133,9 @@ class Driver(WebDriver):
                 self.write_to_element(id_=input_id, value=value)
 
     def click_button_by_text(self, name: str):
-        element = self.find_element_by_xpath(value=f"//button[text()='{name}']")
+        xpath = self.generate_xpath(tag='button', text=name)
+        element = self.find_element_by_xpath(value=xpath)
+        self.wait_for_element_to_be_clickable(locator=(By.XPATH, xpath))
         element.click()
 
     def wait_for_element_to_be_clickable(self, locator) -> WebElement:
